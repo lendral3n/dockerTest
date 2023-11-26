@@ -1,11 +1,11 @@
-# syntax=docker/dockerfile:1
-FROM busybox:latest
-COPY --chmod=755 <<EOF /app/run.sh
-#!/bin/sh
-while true; do
-  echo -ne "The time is now $(date +%T)\\r"
-  sleep 1
-done
-EOF
+FROM golang:1.21.4-alpine
 
-ENTRYPOINT /app/run.sh
+COPY . /app
+
+WORKDIR /app
+
+RUN go mod tidy
+
+RUN go build -o server .
+
+CMD [ "/app/server" ]
